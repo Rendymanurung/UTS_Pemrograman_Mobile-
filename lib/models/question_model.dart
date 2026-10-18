@@ -9,33 +9,32 @@ class Question {
     required this.correctAnswerIndex,
   });
 
-
   static List<Question> get dummyQuestions {
     return [
       Question(
-        questionText: 'siapa nama anak Gol D Roger?',
+        questionText: 'Siapa nama anak Gol D Roger?',
         options: ['Ace', 'Shanks', 'Buggy', 'Garp'],
-        correctAnswerIndex: 2, // Dart ada di index ke-2
-      ),
-      Question(
-        questionText: 'siapa yang dijuluki sebagai Fox Sin di anime nanatsu no taizai?',
-        options: ['kamado', 'Diane', 'Ban', 'Vanitas'],
-        correctAnswerIndex: 1,
-      ),
-      Question(
-        questionText: 'berapa istri rudeus pada anime mushoku tensei?',
-        options: ['6', '1', '2', '3'],
         correctAnswerIndex: 0,
       ),
       Question(
-        questionText: 'siapa yonkou dengan bounty termahal sebelum time skip?',
-        options: ['big mom', 'shanks', 'shirohige', 'kurohige'],
+        questionText: 'Siapa yang dijuluki sebagai Fox Sin di anime Nanatsu no Taizai?',
+        options: ['Kamado', 'Diane', 'Ban', 'Vanitas'],
+        correctAnswerIndex: 2,
+      ),
+      Question(
+        questionText: 'Berapa istri Rudeus pada anime Mushoku Tensei?',
+        options: ['6', '1', '2', '3'],
         correctAnswerIndex: 3,
       ),
       Question(
-        questionText: 'disebut apa kaum petinggi dunia ?',
-        options: ['supernova', 'kiseki no sedai', 'tenryubito', 'valhalla'],
-        correctAnswerIndex: 1,
+        questionText: 'Siapa Yonkou dengan bounty termahal sebelum time skip?',
+        options: ['Big Mom', 'Shanks', 'Shirohige', 'Kurohige'],
+        correctAnswerIndex: 2,
+      ),
+      Question(
+        questionText: 'Disebut apa kaum petinggi dunia?',
+        options: ['Supernova', 'Kiseki no Sedai', 'Tenryubito', 'Valhalla'],
+        correctAnswerIndex: 2,
       ),
     ];
   }
