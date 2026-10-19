@@ -5,6 +5,7 @@ import '../providers/quiz_provider.dart';
 import '../providers/theme_provider.dart';
 import '../providers/user_provider.dart';
 import '../utils/responsive_util.dart';
+import '../widgets/option_card.dart';
 import 'result_screen.dart';
 
 class QuizScreen extends StatelessWidget {
@@ -16,34 +17,21 @@ class QuizScreen extends StatelessWidget {
     final userProvider = Provider.of<UserProvider>(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
 
-    // If quiz is finished, navigate to ResultScreen
-    if (quizProvider.isQuizFinished) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const ResultScreen(),
-          ),
-        );
-      });
-    }
-
-    final question = quizProvider.currentQuestion;
-    final int questionNum = quizProvider.currentIndex + 1;
-    final int totalQuestions = quizProvider.questions.length;
-
-    bool isLargeScreen =
+    final currentQuestion = quizProvider.currentQuestion;
+    final isLargeScreen =
         ResponsiveUtil.isTablet(context) || ResponsiveUtil.isDesktop(context);
-    double containerWidth =
-        isLargeScreen ? 600 : ResponsiveUtil.width(context, 0.95);
+    final containerWidth =
+        isLargeScreen ? 600.0 : ResponsiveUtil.width(context, 0.95);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Halo, ${userProvider.userName}'),
+        title: Text('Halo, ${userProvider.userName}!'),
         actions: [
           IconButton(
             icon: Icon(
-              themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode,
+              themeProvider.isDarkMode
+                  ? Icons.light_mode_rounded
+                  : Icons.dark_mode_rounded,
             ),
             onPressed: () {
               themeProvider.toggleTheme(!themeProvider.isDarkMode);
@@ -55,51 +43,49 @@ class QuizScreen extends StatelessWidget {
         child: SizedBox(
           width: containerWidth,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+            padding: const EdgeInsets.all(20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                LinearProgressIndicator(
-                  value: questionNum / totalQuestions,
-                  backgroundColor: Colors.grey[300],
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).primaryColor,
-                  ),
-                  minHeight: 8,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                const SizedBox(height: 15),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Soal $questionNum dari $totalQuestions',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    Text(
-                      'Skor: ${quizProvider.score}',
+                      'Soal ${quizProvider.currentIndex + 1} / ${quizProvider.questions.length}',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).primaryColor,
                       ),
                     ),
+                    Text(
+                      'Skor: ${quizProvider.score}',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ],
                 ),
-                const SizedBox(height: 25),
+                const SizedBox(height: 10),
+                LinearProgressIndicator(
+                  value: (quizProvider.currentIndex + 1) /
+                      quizProvider.questions.length,
+                  backgroundColor: Colors.grey[300],
+                  color: Theme.of(context).primaryColor,
+                  minHeight: 8,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                const SizedBox(height: 30),
                 Card(
-                  elevation: 4,
+                  elevation: 3,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(15),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(24.0),
+                    padding: const EdgeInsets.all(20.0),
                     child: Text(
-                      question.questionText,
+                      currentQuestion.questionText,
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
@@ -108,36 +94,25 @@ class QuizScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 20),
                 Expanded(
-                  child: ListView.separated(
-                    itemCount: question.options.length,
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(height: 12),
+                  child: ListView.builder(
+                    itemCount: currentQuestion.options.length,
                     itemBuilder: (context, index) {
-                      final optionText = question.options[index];
-                      return ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 16,
-                            horizontal: 20,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          elevation: 2,
-                          alignment: Alignment.centerLeft,
-                        ),
-                        onPressed: () {
+                      return OptionCard(
+                        optionText: currentQuestion.options[index],
+                        onTap: () {
                           quizProvider.answerQuestion(index);
+
+                          if (quizProvider.isQuizFinished) {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ResultScreen(),
+                              ),
+                            );
+                          }
                         },
-                        child: Text(
-                          '${String.fromCharCode(65 + index)}. $optionText',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
                       );
                     },
                   ),

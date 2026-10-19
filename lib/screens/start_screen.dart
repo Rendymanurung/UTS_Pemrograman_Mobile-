@@ -53,7 +53,6 @@ class _StartScreenState extends State<StartScreen> {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
 
-    // Mengecek apakah perangkat adalah tablet/desktop untuk membatasi lebar form
     bool isLargeScreen =
         ResponsiveUtil.isTablet(context) || ResponsiveUtil.isDesktop(context);
     double formWidth = isLargeScreen ? 500 : ResponsiveUtil.width(context, 0.9);
@@ -87,7 +86,7 @@ class _StartScreenState extends State<StartScreen> {
                   ),
                   const SizedBox(height: 30),
                   Text(
-                    'Aplikasi Kuis',
+                    'Anime Knowledge',
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
@@ -96,7 +95,7 @@ class _StartScreenState extends State<StartScreen> {
                   ),
                   const SizedBox(height: 10),
                   const Text(
-                    'Uji pengetahuan anime kamu sekarang!',
+                    'Seberapa Paham Kamu Dengan Anime?!',
                     style: TextStyle(fontSize: 16, color: Colors.grey),
                   ),
                   const SizedBox(height: 50),
