@@ -1,3 +1,4 @@
+import 'result_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -103,6 +104,7 @@ class QuizScreen extends StatelessWidget {
                         optionText: currentQuestion.options[index],
                         onTap: () {
                           quizProvider.answerQuestion(index);
+
 
                           if (quizProvider.isQuizFinished) {
                             Navigator.pushReplacement(

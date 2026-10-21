@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/quiz_provider.dart';
-import '../providers/theme_provider.dart';
 import '../providers/user_provider.dart';
 import '../utils/responsive_util.dart';
 import '../widgets/custom_button.dart';
-import 'quiz_screen.dart';
 import 'start_screen.dart';
 
 class ResultScreen extends StatelessWidget {
@@ -14,140 +12,85 @@ class ResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final quizProvider = Provider.of<QuizProvider>(context);
-    final userProvider = Provider.of<UserProvider>(context);
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    final quizProvider = Provider.of<QuizProvider>(context, listen: false);
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
 
-    bool isLargeScreen =
-        ResponsiveUtil.isTablet(context) || ResponsiveUtil.isDesktop(context);
-    double containerWidth =
-        isLargeScreen ? 500 : ResponsiveUtil.width(context, 0.9);
 
-    int score = quizProvider.score;
+    final isLargeScreen = ResponsiveUtil.isTablet(context) || ResponsiveUtil.isDesktop(context);
+    final containerWidth = isLargeScreen ? 500.0 : ResponsiveUtil.width(context, 0.9);
+
+
     String feedbackMessage;
-    IconData feedbackIcon;
-    Color feedbackColor;
-
-    if (score >= 80) {
+    if (quizProvider.score >= 80) {
       feedbackMessage = 'Luar Biasa!';
-      feedbackIcon = Icons.stars_rounded;
-      feedbackColor = Colors.amber;
-    } else if (score >= 60) {
-      feedbackMessage = 'Bagus Sekali!';
-      feedbackIcon = Icons.thumb_up_rounded;
-      feedbackColor = Colors.green;
+    } else if (quizProvider.score >= 60) {
+      feedbackMessage = 'Kerja Bagus!';
     } else {
       feedbackMessage = 'Jangan Menyerah, Coba Lagi!';
-      feedbackIcon = Icons.sentiment_dissatisfied_rounded;
-      feedbackColor = Colors.orangeAccent;
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Hasil Kuis'),
-        actions: [
-          IconButton(
-            icon: Icon(
-              themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode,
-            ),
-            onPressed: () {
-              themeProvider.toggleTheme(!themeProvider.isDarkMode);
-            },
-          ),
-        ],
-      ),
       body: Center(
         child: SingleChildScrollView(
           child: SizedBox(
             width: containerWidth,
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    feedbackIcon,
-                    size: 100,
-                    color: feedbackColor,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.emoji_events_rounded,
+                  size: 150,
+                  color: Theme.of(context).primaryColor,
+                ),
+                const SizedBox(height: 30),
+                Text(
+                  feedbackMessage,
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
                   ),
-                  const SizedBox(height: 20),
-                  Text(
-                    feedbackMessage,
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
-                    ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'Terima kasih telah bermain, ${userProvider.userName}.',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 16, color: Colors.grey),
+                ),
+                const SizedBox(height: 40),
+                Text(
+                  'Skor Akhir Kamu',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
                   ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Kerja bagus, ${userProvider.userName}!',
-                    style: const TextStyle(fontSize: 18, color: Colors.grey),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  '${quizProvider.score}',
+                  style: TextStyle(
+                    fontSize: 60,
+                    fontWeight: FontWeight.w900,
+                    color: Theme.of(context).primaryColor,
                   ),
-                  const SizedBox(height: 30),
-                  Card(
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(24.0),
-                      child: Column(
-                        children: [
-                          const Text(
-                            'Skor Akhir Kamu',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            '$score / 100',
-                            style: TextStyle(
-                              fontSize: 48,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                          ),
-                        ],
+                ),
+                const SizedBox(height: 50),
+                CustomButton(
+                  text: 'ULANGI KUIS',
+                  onPressed: () {
+
+                    quizProvider.resetQuiz();
+
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const StartScreen(),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  CustomButton(
-                    text: 'ULANGI KUIS',
-                    onPressed: () {
-                      quizProvider.resetQuiz();
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const QuizScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 15),
-                  OutlinedButton(
-                    onPressed: () {
-                      quizProvider.resetQuiz();
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const StartScreen(),
-                        ),
-                      );
-                    },
-                    style: OutlinedButton.styleFrom(
-                      minimumSize: const Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                    ),
-                    child: const Text('KEMBALI KE Halaman Awal'),
-                  ),
-                ],
-              ),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
         ),
