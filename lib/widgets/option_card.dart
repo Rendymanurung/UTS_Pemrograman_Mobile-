@@ -32,7 +32,7 @@ class _OptionCardState extends State<OptionCard>
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 100),
-      lowerBound: 0.96,
+      lowerBound: 0.97,
       upperBound: 1.0,
     )..value = 1.0;
     _scaleAnim = _controller;
@@ -47,46 +47,44 @@ class _OptionCardState extends State<OptionCard>
   Color _getBorderColor(bool isDark) {
     switch (widget.state) {
       case OptionState.correct:
-        return AppTheme.correctColor;
+        return AppTheme.spotifyGreen;
       case OptionState.wrong:
-        return AppTheme.wrongColor;
+        return AppTheme.negativeRed;
       case OptionState.normal:
-        return isDark
-            ? AppTheme.primaryColor.withValues(alpha: 0.35)
-            : AppTheme.primaryColor.withValues(alpha: 0.25);
+        return isDark ? AppTheme.borderGray : AppTheme.lightBorder;
     }
   }
 
   Color _getCardColor(bool isDark) {
     switch (widget.state) {
       case OptionState.correct:
-        return AppTheme.correctColor.withValues(alpha: 0.15);
+        return AppTheme.spotifyGreen.withValues(alpha: 0.15);
       case OptionState.wrong:
-        return AppTheme.wrongColor.withValues(alpha: 0.12);
+        return AppTheme.negativeRed.withValues(alpha: 0.12);
       case OptionState.normal:
-        return isDark ? AppTheme.darkCard : Colors.white;
+        return isDark ? AppTheme.darkSurface : AppTheme.lightSurface;
     }
   }
 
-  Color _getLabelBg() {
+  Color _getLabelBg(bool isDark) {
     switch (widget.state) {
       case OptionState.correct:
-        return AppTheme.correctColor;
+        return AppTheme.spotifyGreen;
       case OptionState.wrong:
-        return AppTheme.wrongColor;
+        return AppTheme.negativeRed;
       case OptionState.normal:
-        return AppTheme.primaryColor;
+        return isDark ? AppTheme.midDark : AppTheme.lightBg;
     }
   }
 
-  IconData? _getTrailingIcon() {
+  Color _getLabelText(bool isDark) {
     switch (widget.state) {
       case OptionState.correct:
-        return Icons.check_circle_rounded;
+        return Colors.black;
       case OptionState.wrong:
-        return Icons.cancel_rounded;
+        return Colors.white;
       case OptionState.normal:
-        return null;
+        return isDark ? AppTheme.textBase : AppTheme.textDark;
     }
   }
 
@@ -104,59 +102,57 @@ class _OptionCardState extends State<OptionCard>
         builder: (context, child) =>
             Transform.scale(scale: _scaleAnim.value, child: child),
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          margin: const EdgeInsets.symmetric(vertical: 7),
+          duration: const Duration(milliseconds: 200),
+          margin: const EdgeInsets.symmetric(vertical: 6),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
             color: _getCardColor(isDark),
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(8), // Spotify 8px Radius
             border: Border.all(
               color: _getBorderColor(isDark),
-              width: widget.state == OptionState.normal ? 1.5 : 2,
+              width: widget.state == OptionState.normal ? 1 : 1.5,
             ),
             boxShadow: [
               BoxShadow(
-                color: widget.state == OptionState.correct
-                    ? AppTheme.correctColor.withValues(alpha: 0.2)
-                    : widget.state == OptionState.wrong
-                        ? AppTheme.wrongColor.withValues(alpha: 0.15)
-                        : Colors.black.withValues(alpha: 0.06),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
+                color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
+                blurRadius: 8,
+                offset: const Offset(0, 3),
               ),
             ],
           ),
           child: Row(
             children: [
-              // Label A/B/C/D
+              // Circular Option Badge
               AnimatedContainer(
-                duration: const Duration(milliseconds: 250),
-                width: 36,
-                height: 36,
+                duration: const Duration(milliseconds: 200),
+                width: 32,
+                height: 32,
                 decoration: BoxDecoration(
-                  gradient: widget.state == OptionState.normal
-                      ? AppTheme.primaryGradient
-                      : null,
-                  color: widget.state == OptionState.normal
-                      ? null
-                      : _getLabelBg(),
-                  borderRadius: BorderRadius.circular(10),
+                  color: _getLabelBg(isDark),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: widget.state == OptionState.normal
+                        ? (isDark ? AppTheme.borderGray : AppTheme.lightBorder)
+                        : Colors.transparent,
+                  ),
                 ),
                 child: Center(
                   child: widget.state == OptionState.normal
                       ? Text(
                           widget.optionLabel,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
+                          style: TextStyle(
+                            color: _getLabelText(isDark),
+                            fontWeight: FontWeight.w700,
+                            fontSize: 13,
                             fontFamily: 'Poppins',
                           ),
                         )
                       : Icon(
-                          _getTrailingIcon(),
-                          color: Colors.white,
-                          size: 20,
+                          widget.state == OptionState.correct
+                              ? Icons.check_rounded
+                              : Icons.close_rounded,
+                          color: _getLabelText(isDark),
+                          size: 18,
                         ),
                 ),
               ),
@@ -168,7 +164,7 @@ class _OptionCardState extends State<OptionCard>
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
-                    color: isDark ? AppTheme.textLight : AppTheme.textDark,
+                    color: isDark ? AppTheme.textBase : AppTheme.textDark,
                     fontFamily: 'Poppins',
                   ),
                 ),

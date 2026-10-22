@@ -40,73 +40,51 @@ class _CustomTextFieldState extends State<CustomTextField> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
+      duration: const Duration(milliseconds: 180),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
-        gradient: _isFocused
-            ? LinearGradient(
-                colors: [
-                  AppTheme.primaryColor.withValues(alpha: 0.15),
-                  AppTheme.accentColor.withValues(alpha: 0.08),
-                ],
-              )
-            : null,
-        color: _isFocused
-            ? null
-            : isDark
-                ? AppTheme.darkCard
-                : Colors.white,
-        boxShadow: _isFocused
-            ? [
-                BoxShadow(
-                  color: AppTheme.primaryColor.withValues(alpha: 0.3),
-                  blurRadius: 16,
-                  offset: const Offset(0, 4),
-                ),
-              ]
-            : [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.08),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+        color: isDark ? AppTheme.midDark : AppTheme.lightSurface,
+        borderRadius: BorderRadius.circular(500), // Spotify Pill Input Shape
         border: Border.all(
           color: _isFocused
-              ? AppTheme.primaryColor
-              : isDark
-                  ? AppTheme.primaryColor.withValues(alpha: 0.2)
-                  : AppTheme.primaryColor.withValues(alpha: 0.15),
-          width: _isFocused ? 2 : 1,
+              ? AppTheme.spotifyGreen
+              : (isDark ? AppTheme.borderGray : AppTheme.lightBorder),
+          width: _isFocused ? 1.5 : 1,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
       child: TextField(
         controller: widget.controller,
         focusNode: _focus,
         style: TextStyle(
-          color: isDark ? AppTheme.textLight : AppTheme.textDark,
+          color: isDark ? AppTheme.textBase : AppTheme.textDark,
           fontFamily: 'Poppins',
-          fontSize: 15,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
         ),
         decoration: InputDecoration(
           hintText: widget.hintText,
           hintStyle: TextStyle(
-            color: isDark ? AppTheme.subtitleLight : AppTheme.subtitleDark,
+            color: isDark ? AppTheme.textSilver : AppTheme.subtitleDark,
             fontFamily: 'Poppins',
             fontSize: 14,
           ),
-          prefixIcon: Container(
-            padding: const EdgeInsets.all(12),
-            child: ShaderMask(
-              shaderCallback: (bounds) =>
-                  AppTheme.primaryGradient.createShader(bounds),
-              child: Icon(widget.icon, color: Colors.white, size: 22),
-            ),
+          prefixIcon: Icon(
+            widget.icon,
+            color: _isFocused
+                ? AppTheme.spotifyGreen
+                : (isDark ? AppTheme.textSilver : AppTheme.subtitleDark),
+            size: 20,
           ),
           filled: false,
           border: InputBorder.none,
           contentPadding:
-              const EdgeInsets.symmetric(vertical: 18, horizontal: 4),
+              const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         ),
       ),
     );

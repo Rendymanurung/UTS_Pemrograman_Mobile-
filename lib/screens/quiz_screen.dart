@@ -28,11 +28,11 @@ class _QuizScreenState extends State<QuizScreen>
     super.initState();
     _cardController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 450),
+      duration: const Duration(milliseconds: 350),
     );
     _cardFade = CurvedAnimation(parent: _cardController, curve: Curves.easeOut);
     _cardSlide = Tween<Offset>(
-      begin: const Offset(0.08, 0),
+      begin: const Offset(0.05, 0),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _cardController, curve: Curves.easeOut));
     _cardController.forward();
@@ -55,7 +55,6 @@ class _QuizScreenState extends State<QuizScreen>
     final userProvider = Provider.of<UserProvider>(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
 
-    // Trigger animation when question changes
     if (quizProvider.currentIndex != _lastIndex) {
       _lastIndex = quizProvider.currentIndex;
       WidgetsBinding.instance.addPostFrameCallback((_) => _animateCard());
@@ -71,252 +70,225 @@ class _QuizScreenState extends State<QuizScreen>
     final containerWidth =
         isLargeScreen ? 600.0 : ResponsiveUtil.width(context, 1.0);
 
-    // Option labels
     const labels = ['A', 'B', 'C', 'D'];
 
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: isDark
-              ? AppTheme.darkBgGradient
-              : const LinearGradient(
-                  colors: [Color(0xFFEDE9FE), Color(0xFFFDF4FF), Color(0xFFEDE9FE)],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-        ),
-        child: SafeArea(
-          child: Center(
-            child: SizedBox(
-              width: containerWidth,
-              child: Column(
-                children: [
-                  // === APP BAR ===
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                    child: Row(
-                      children: [
-                        // User info
-                        Expanded(
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  gradient: AppTheme.primaryGradient,
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    userProvider.userName.isNotEmpty
-                                        ? userProvider.userName[0].toUpperCase()
-                                        : '?',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      fontFamily: 'Poppins',
-                                    ),
+      backgroundColor: isDark ? AppTheme.nearBlack : AppTheme.lightBg,
+      body: SafeArea(
+        child: Center(
+          child: SizedBox(
+            width: containerWidth,
+            child: Column(
+              children: [
+                // === TOP BAR ===
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                  child: Row(
+                    children: [
+                      // User Info
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 36,
+                              height: 36,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: AppTheme.spotifyGreen,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  userProvider.userName.isNotEmpty
+                                      ? userProvider.userName[0].toUpperCase()
+                                      : '?',
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    fontFamily: 'Poppins',
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 10),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    userProvider.userName,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
-                                      color: isDark
-                                          ? AppTheme.textLight
-                                          : AppTheme.textDark,
-                                      fontFamily: 'Poppins',
-                                    ),
+                            ),
+                            const SizedBox(width: 10),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  userProvider.userName,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 14,
+                                    color: isDark
+                                        ? AppTheme.textBase
+                                        : AppTheme.textDark,
+                                    fontFamily: 'Poppins',
                                   ),
-                                  Text(
-                                    'Soal ${current + 1} dari $total',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: isDark
-                                          ? AppTheme.subtitleLight
-                                          : AppTheme.subtitleDark,
-                                      fontFamily: 'Poppins',
-                                    ),
+                                ),
+                                Text(
+                                  'SOAL ${current + 1} DARI $total',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: isDark
+                                        ? AppTheme.textSilver
+                                        : AppTheme.subtitleDark,
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 1.0,
                                   ),
-                                ],
-                              ),
-                            ],
-                          ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                        // Score chip
-                        _ScoreChip(score: quizProvider.score),
-                        const SizedBox(width: 8),
-                        // Theme toggle
-                        GestureDetector(
-                          onTap: () =>
-                              themeProvider.toggleTheme(!themeProvider.isDarkMode),
-                          child: Container(
-                            width: 42,
-                            height: 42,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
+                      ),
+
+                      // Score Chip
+                      _ScoreChip(score: quizProvider.score, isDark: isDark),
+                      const SizedBox(width: 8),
+
+                      // Theme Toggle Button
+                      GestureDetector(
+                        onTap: () =>
+                            themeProvider.toggleTheme(!themeProvider.isDarkMode),
+                        child: Container(
+                          width: 38,
+                          height: 38,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: isDark
+                                ? AppTheme.darkSurface
+                                : AppTheme.lightSurface,
+                            border: Border.all(
                               color: isDark
-                                  ? AppTheme.darkCard
-                                  : Colors.white.withValues(alpha: 0.9),
-                              border: Border.all(
-                                  color:
-                                      AppTheme.primaryColor.withValues(alpha: 0.3)),
-                            ),
-                            child: Icon(
-                              isDark
-                                  ? Icons.light_mode_rounded
-                                  : Icons.dark_mode_rounded,
-                              color: AppTheme.primaryColor,
-                              size: 20,
+                                  ? AppTheme.borderGray
+                                  : AppTheme.lightBorder,
                             ),
                           ),
+                          child: Icon(
+                            isDark
+                                ? Icons.light_mode_outlined
+                                : Icons.dark_mode_outlined,
+                            color: isDark ? AppTheme.textBase : AppTheme.textDark,
+                            size: 18,
+                          ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
+                ),
 
-                  // === PROGRESS BAR ===
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-                    child: Column(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: TweenAnimationBuilder<double>(
-                            tween: Tween<double>(begin: 0, end: progress),
-                            duration: const Duration(milliseconds: 500),
-                            curve: Curves.easeInOut,
-                            builder: (context, value, _) =>
-                                LinearProgressIndicator(
-                              value: value,
-                              backgroundColor: isDark
-                                  ? AppTheme.darkCard
-                                  : AppTheme.primaryColor.withValues(alpha: 0.12),
-                              minHeight: 8,
-                              valueColor: const AlwaysStoppedAnimation<Color>(
-                                AppTheme.primaryColor,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: List.generate(
-                            total,
-                            (i) => AnimatedContainer(
-                              duration: const Duration(milliseconds: 400),
-                              width: 28,
-                              height: 6,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(3),
-                                color: i <= current
-                                    ? AppTheme.primaryColor
-                                    : isDark
-                                        ? AppTheme.darkCard
-                                        : AppTheme.primaryColor
-                                            .withValues(alpha: 0.15),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 14),
-
-                  // === SCROLLABLE CONTENT ===
-                  Expanded(
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: FadeTransition(
-                        opacity: _cardFade,
-                        child: SlideTransition(
-                          position: _cardSlide,
-                          child: Column(
-                            children: [
-                              // === QUESTION IMAGE ===
-                              if (q.imagePath != null)
-                                _QuestionImage(imagePath: q.imagePath!, isDark: isDark),
-
-                              const SizedBox(height: 14),
-
-                              // === QUESTION TEXT CARD ===
-                              _QuestionCard(
-                                  text: q.questionText,
-                                  number: current + 1,
-                                  isDark: isDark),
-
-                              const SizedBox(height: 16),
-
-                              // === OPTIONS ===
-                              ...List.generate(q.options.length, (i) {
-                                OptionState state = OptionState.normal;
-                                if (quizProvider.hasAnswered) {
-                                  if (i == q.correctAnswerIndex) {
-                                    state = OptionState.correct;
-                                  } else if (i ==
-                                          quizProvider.selectedAnswerIndex &&
-                                      i != q.correctAnswerIndex) {
-                                    state = OptionState.wrong;
-                                  }
-                                }
-                                return OptionCard(
-                                  optionText: q.options[i],
-                                  optionLabel: labels[i],
-                                  state: state,
-                                  onTap: () {
-                                    quizProvider.answerQuestion(i);
-                                  },
-                                );
-                              }),
-
-                              const SizedBox(height: 16),
-
-                              // === NEXT BUTTON ===
-                              if (quizProvider.hasAnswered)
-                                _NextButton(
-                                  isLast: current == total - 1,
-                                  onNext: () {
-                                    quizProvider.nextQuestion();
-                                    if (quizProvider.isQuizFinished) {
-                                      Navigator.pushReplacement(
-                                        context,
-                                        PageRouteBuilder(
-                                          pageBuilder: (_, a, __) =>
-                                              const ResultScreen(),
-                                          transitionsBuilder:
-                                              (_, animation, __, child) =>
-                                                  FadeTransition(
-                                            opacity: animation,
-                                            child: child,
-                                          ),
-                                          transitionDuration:
-                                              const Duration(milliseconds: 500),
-                                        ),
-                                      );
-                                    }
-                                  },
-                                ),
-
-                              const SizedBox(height: 24),
-                            ],
-                          ),
+                // === PROGRESS BAR ===
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: TweenAnimationBuilder<double>(
+                      tween: Tween<double>(begin: 0, end: progress),
+                      duration: const Duration(milliseconds: 400),
+                      curve: Curves.easeInOut,
+                      builder: (context, value, _) => LinearProgressIndicator(
+                        value: value,
+                        backgroundColor: isDark
+                            ? AppTheme.darkCard
+                            : AppTheme.lightBorder,
+                        minHeight: 6,
+                        valueColor: const AlwaysStoppedAnimation<Color>(
+                          AppTheme.spotifyGreen,
                         ),
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+
+                const SizedBox(height: 14),
+
+                // === SCROLLABLE CONTENT ===
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: FadeTransition(
+                      opacity: _cardFade,
+                      child: SlideTransition(
+                        position: _cardSlide,
+                        child: Column(
+                          children: [
+                            // === QUESTION IMAGE (Reverted crop to default Alignment.center) ===
+                            if (q.imagePath != null)
+                              _QuestionImage(
+                                imagePath: q.imagePath!,
+                                isDark: isDark,
+                              ),
+
+                            const SizedBox(height: 12),
+
+                            // === QUESTION TEXT CARD ===
+                            _QuestionCard(
+                              text: q.questionText,
+                              number: current + 1,
+                              isDark: isDark,
+                            ),
+
+                            const SizedBox(height: 14),
+
+                            // === OPTIONS ===
+                            ...List.generate(q.options.length, (i) {
+                              OptionState state = OptionState.normal;
+                              if (quizProvider.hasAnswered) {
+                                if (i == q.correctAnswerIndex) {
+                                  state = OptionState.correct;
+                                } else if (i ==
+                                        quizProvider.selectedAnswerIndex &&
+                                    i != q.correctAnswerIndex) {
+                                  state = OptionState.wrong;
+                                }
+                              }
+                              return OptionCard(
+                                optionText: q.options[i],
+                                optionLabel: labels[i],
+                                state: state,
+                                onTap: () {
+                                  quizProvider.answerQuestion(i);
+                                },
+                              );
+                            }),
+
+                            const SizedBox(height: 16),
+
+                            // === NEXT BUTTON ===
+                            if (quizProvider.hasAnswered)
+                              _NextButton(
+                                isLast: current == total - 1,
+                                onNext: () {
+                                  quizProvider.nextQuestion();
+                                  if (quizProvider.isQuizFinished) {
+                                    Navigator.pushReplacement(
+                                      context,
+                                      PageRouteBuilder(
+                                        pageBuilder: (_, a, __) =>
+                                            const ResultScreen(),
+                                        transitionsBuilder:
+                                            (_, animation, __, child) =>
+                                                FadeTransition(
+                                          opacity: animation,
+                                          child: child,
+                                        ),
+                                        transitionDuration:
+                                            const Duration(milliseconds: 400),
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
+
+                            const SizedBox(height: 24),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -329,35 +301,33 @@ class _QuizScreenState extends State<QuizScreen>
 
 class _ScoreChip extends StatelessWidget {
   final int score;
-  const _ScoreChip({required this.score});
+  final bool isDark;
+  const _ScoreChip({required this.score, required this.isDark});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        gradient: AppTheme.goldGradient,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: AppTheme.goldColor.withValues(alpha: 0.35),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
+        color: isDark ? AppTheme.darkSurface : AppTheme.lightSurface,
+        borderRadius: BorderRadius.circular(500), // Pill Shape
+        border: Border.all(
+          color: isDark ? AppTheme.borderGray : AppTheme.lightBorder,
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.star_rounded, color: Colors.white, size: 16),
+          const Icon(Icons.star_rounded, color: AppTheme.spotifyGreen, size: 16),
           const SizedBox(width: 5),
           Text(
-            '$score',
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 15,
+            '$score PTS',
+            style: TextStyle(
+              color: isDark ? AppTheme.textBase : AppTheme.textDark,
+              fontWeight: FontWeight.w700,
+              fontSize: 12,
               fontFamily: 'Poppins',
+              letterSpacing: 1.0,
             ),
           ),
         ],
@@ -377,79 +347,82 @@ class _QuestionImage extends StatelessWidget {
       height: 185,
       width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(22),
+        color: isDark ? AppTheme.darkSurface : AppTheme.lightSurface,
+        borderRadius: BorderRadius.circular(8), // Spotify Standard Card Radius (8px)
+        border: Border.all(
+          color: isDark ? AppTheme.borderGray : AppTheme.lightBorder,
+        ),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.primaryColor.withValues(alpha: 0.25),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
+            color: Colors.black.withValues(alpha: isDark ? 0.4 : 0.05),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(8),
         child: Stack(
           fit: StackFit.expand,
           children: [
+            // Default center alignment (crop reverted as requested)
             Image.asset(
               imagePath,
               fit: BoxFit.cover,
+              alignment: Alignment.center,
               errorBuilder: (context, error, stackTrace) {
                 return Container(
-                  color: isDark ? AppTheme.darkCard : Colors.grey[300],
-                  child: const Center(
-                    child: Icon(
-                      Icons.broken_image_rounded,
-                      color: Colors.grey,
-                      size: 48,
-                    ),
+                  color: isDark ? AppTheme.darkSurface : AppTheme.lightInputBg,
+                  child: Icon(
+                    Icons.broken_image_outlined,
+                    color: isDark ? AppTheme.textSilver : AppTheme.subtitleDark,
+                    size: 40,
                   ),
                 );
               },
             ),
-            // Gradient overlay at bottom
+            // Gradient Overlay
             Positioned(
               bottom: 0,
               left: 0,
               right: 0,
-              height: 60,
+              height: 50,
               child: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
                     colors: [
-                      Colors.black.withValues(alpha: 0.55),
+                      Colors.black.withValues(alpha: 0.6),
                       Colors.transparent,
                     ],
                   ),
                 ),
               ),
             ),
-            // "Petunjuk" badge
+            // Tag Badge
             Positioned(
-              top: 10,
-              left: 10,
+              top: 8,
+              left: 8,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.3)),
+                  color: Colors.black.withValues(alpha: 0.75),
+                  borderRadius: BorderRadius.circular(500),
                 ),
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.image_rounded, color: Colors.white, size: 13),
+                    Icon(Icons.image_rounded, color: AppTheme.spotifyGreen, size: 12),
                     SizedBox(width: 4),
                     Text(
-                      'Petunjuk Visual',
+                      'PETUNJUK GAMBAR',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
                         fontFamily: 'Poppins',
+                        letterSpacing: 1.0,
                       ),
                     ),
                   ],
@@ -467,58 +440,64 @@ class _QuestionCard extends StatelessWidget {
   final String text;
   final int number;
   final bool isDark;
-  const _QuestionCard(
-      {required this.text, required this.number, required this.isDark});
+  const _QuestionCard({
+    required this.text,
+    required this.number,
+    required this.isDark,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: isDark
-            ? AppTheme.darkCard
-            : Colors.white.withValues(alpha: 0.95),
-        borderRadius: BorderRadius.circular(22),
+        color: isDark ? AppTheme.darkSurface : AppTheme.lightSurface,
+        borderRadius: BorderRadius.circular(8), // Spotify 8px Card Radius
         border: Border.all(
-            color: AppTheme.primaryColor.withValues(alpha: 0.2)),
+          color: isDark ? AppTheme.borderGray : AppTheme.lightBorder,
+        ),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.primaryColor.withValues(alpha: 0.1),
-            blurRadius: 18,
-            offset: const Offset(0, 6),
+            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Question number badge
+          // Question Badge
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
             decoration: BoxDecoration(
-              gradient: AppTheme.primaryGradient,
-              borderRadius: BorderRadius.circular(20),
+              color: isDark ? AppTheme.midDark : AppTheme.lightBg,
+              borderRadius: BorderRadius.circular(500),
+              border: Border.all(
+                color: isDark ? AppTheme.borderGray : AppTheme.lightBorder,
+              ),
             ),
             child: Text(
-              'Pertanyaan $number',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
+              'PERTANYAAN 0$number',
+              style: TextStyle(
+                color: isDark ? AppTheme.textSilver : AppTheme.subtitleDark,
+                fontSize: 10,
+                fontWeight: FontWeight.w700,
                 fontFamily: 'Poppins',
+                letterSpacing: 1.0,
               ),
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
           Text(
             text,
             style: TextStyle(
-              fontSize: 17,
+              fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: isDark ? AppTheme.textLight : AppTheme.textDark,
+              color: isDark ? AppTheme.textBase : AppTheme.textDark,
               fontFamily: 'Poppins',
-              height: 1.5,
+              height: 1.4,
             ),
             textAlign: TextAlign.left,
           ),
@@ -528,84 +507,52 @@ class _QuestionCard extends StatelessWidget {
   }
 }
 
-class _NextButton extends StatefulWidget {
+class _NextButton extends StatelessWidget {
   final bool isLast;
   final VoidCallback onNext;
-  const _NextButton({required this.isLast, required this.onNext});
-
-  @override
-  State<_NextButton> createState() => _NextButtonState();
-}
-
-class _NextButtonState extends State<_NextButton>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _anim;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 350),
-    )..forward();
-    _anim = CurvedAnimation(parent: _controller, curve: Curves.elasticOut);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  const _NextButton({
+    required this.isLast,
+    required this.onNext,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return ScaleTransition(
-      scale: _anim,
-      child: GestureDetector(
-        onTap: widget.onNext,
-        child: Container(
-          width: double.infinity,
-          height: 56,
-          decoration: BoxDecoration(
-            gradient: widget.isLast
-                ? AppTheme.goldGradient
-                : AppTheme.primaryGradient,
-            borderRadius: BorderRadius.circular(18),
-            boxShadow: [
-              BoxShadow(
-                color: (widget.isLast
-                        ? AppTheme.goldColor
-                        : AppTheme.primaryColor)
-                    .withValues(alpha: 0.4),
-                blurRadius: 18,
-                offset: const Offset(0, 7),
+    return GestureDetector(
+      onTap: onNext,
+      child: Container(
+        width: double.infinity,
+        height: 50,
+        decoration: BoxDecoration(
+          color: AppTheme.spotifyGreen,
+          borderRadius: BorderRadius.circular(500), // Spotify Full Pill Shape
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.3),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              (isLast ? 'Lihat Hasil Akhir' : 'Lanjut Soal Berikutnya').toUpperCase(),
+              style: const TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w700,
+                fontSize: 14,
+                letterSpacing: 1.5, // Wide Letter Spacing
+                fontFamily: 'Poppins',
               ),
-            ],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                widget.isLast
-                    ? Icons.emoji_events_rounded
-                    : Icons.arrow_forward_rounded,
-                color: Colors.white,
-                size: 22,
-              ),
-              const SizedBox(width: 10),
-              Text(
-                widget.isLast ? 'LIHAT HASIL' : 'LANJUT',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  letterSpacing: 1.5,
-                  fontFamily: 'Poppins',
-                ),
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(width: 8),
+            Icon(
+              isLast ? Icons.emoji_events_rounded : Icons.arrow_forward_rounded,
+              color: Colors.black,
+              size: 18,
+            ),
+          ],
         ),
       ),
     );

@@ -29,8 +29,8 @@ class _CustomButtonState extends State<CustomButton>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 120),
-      lowerBound: 0.95,
+      duration: const Duration(milliseconds: 100),
+      lowerBound: 0.96,
       upperBound: 1.0,
     )..value = 1.0;
     _scaleAnim = _controller;
@@ -48,6 +48,19 @@ class _CustomButtonState extends State<CustomButton>
 
   @override
   Widget build(BuildContext context) {
+    // Spotify Style: Primary Spotify Green (#1ED760) with Black Text
+    final bgColor = widget.isSecondary
+        ? AppTheme.midDark
+        : AppTheme.spotifyGreen;
+
+    final fgColor = widget.isSecondary
+        ? AppTheme.textBase
+        : Colors.black;
+
+    final borderColor = widget.isSecondary
+        ? AppTheme.borderGray
+        : Colors.transparent;
+
     return GestureDetector(
       onTapDown: _onTapDown,
       onTapUp: _onTapUp,
@@ -61,44 +74,33 @@ class _CustomButtonState extends State<CustomButton>
         ),
         child: Container(
           width: double.infinity,
-          height: 58,
+          height: 52,
           decoration: BoxDecoration(
-            gradient: widget.isSecondary
-                ? null
-                : AppTheme.primaryGradient,
-            color: widget.isSecondary
-                ? Colors.transparent
-                : null,
-            border: widget.isSecondary
-                ? Border.all(color: AppTheme.primaryColor, width: 2)
-                : null,
-            borderRadius: BorderRadius.circular(18),
-            boxShadow: widget.isSecondary
-                ? null
-                : [
-                    BoxShadow(
-                      color: AppTheme.primaryColor.withValues(alpha: 0.45),
-                      blurRadius: 20,
-                      offset: const Offset(0, 8),
-                    ),
-                  ],
+            color: bgColor,
+            borderRadius: BorderRadius.circular(500), // Spotify Full Pill Radius
+            border: Border.all(color: borderColor, width: 1),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.5),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
+              ),
+            ],
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (widget.icon != null) ...[
-                Icon(widget.icon, color: Colors.white, size: 22),
-                const SizedBox(width: 10),
+                Icon(widget.icon, color: fgColor, size: 20),
+                const SizedBox(width: 8),
               ],
               Text(
-                widget.text,
+                widget.text.toUpperCase(), // Spotify Uppercase Systematic Voice
                 style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: widget.isSecondary
-                      ? AppTheme.primaryColor
-                      : Colors.white,
-                  letterSpacing: 1.5,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: fgColor,
+                  letterSpacing: 1.5, // Spotify Wide Letter Spacing
                   fontFamily: 'Poppins',
                 ),
               ),

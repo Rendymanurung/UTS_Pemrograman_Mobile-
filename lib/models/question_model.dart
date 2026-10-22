@@ -35,13 +35,13 @@ class Question {
         questionText: 'Siapa Yonkou dengan bounty termahal sebelum time skip?',
         options: ['Big Mom', 'Shanks', 'Shirohige', 'Kurohige'],
         correctAnswerIndex: 2,
-        imagePath: 'assets/images/quiz_4.png',
+        imagePath: 'assets/images/quiz_4.jpeg',
       ),
       Question(
         questionText: 'Disebut apa kaum petinggi dunia?',
         options: ['Supernova', 'Kiseki no Sedai', 'Tenryubito', 'Valhalla'],
         correctAnswerIndex: 2,
-        imagePath: 'assets/images/quiz_5.jpg',
+        imagePath: 'assets/images/quiz_5.jpeg',
       ),
     ];
   }
