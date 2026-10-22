@@ -394,6 +394,18 @@ class _QuestionImage extends StatelessWidget {
             Image.asset(
               imagePath,
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  color: isDark ? AppTheme.darkCard : Colors.grey[300],
+                  child: const Center(
+                    child: Icon(
+                      Icons.broken_image_rounded,
+                      color: Colors.grey,
+                      size: 48,
+                    ),
+                  ),
+                );
+              },
             ),
             // Gradient overlay at bottom
             Positioned(

@@ -29,13 +29,13 @@ class Question {
         questionText: 'Berapa istri Rudeus pada anime Mushoku Tensei?',
         options: ['6', '1', '2', '3'],
         correctAnswerIndex: 3,
-        imagePath: 'assets/images/quiz_3.jpg',
+        imagePath: 'assets/images/quiz_3.jpeg',
       ),
       Question(
         questionText: 'Siapa Yonkou dengan bounty termahal sebelum time skip?',
         options: ['Big Mom', 'Shanks', 'Shirohige', 'Kurohige'],
         correctAnswerIndex: 2,
-        imagePath: 'assets/images/quiz_4.jpg',
+        imagePath: 'assets/images/quiz_4.png',
       ),
       Question(
         questionText: 'Disebut apa kaum petinggi dunia?',
