@@ -36,6 +36,14 @@ class _QuizScreenState extends State<QuizScreen>
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _cardController, curve: Curves.easeOut));
     _cardController.forward();
+
+    // Start Timer on Screen Init
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final quizProvider = Provider.of<QuizProvider>(context, listen: false);
+      if (!quizProvider.hasAnswered && !quizProvider.isQuizFinished) {
+        quizProvider.startTimer();
+      }
+    });
   }
 
   @override
@@ -143,6 +151,13 @@ class _QuizScreenState extends State<QuizScreen>
                         ),
                       ),
 
+                      // Countdown Timer Badge
+                      _TimerChip(
+                        seconds: quizProvider.remainingSeconds,
+                        isDark: isDark,
+                      ),
+                      const SizedBox(width: 8),
+
                       // Score Chip
                       _ScoreChip(score: quizProvider.score, isDark: isDark),
                       const SizedBox(width: 8),
@@ -213,7 +228,41 @@ class _QuizScreenState extends State<QuizScreen>
                         position: _cardSlide,
                         child: Column(
                           children: [
-                            // === QUESTION IMAGE (Reverted crop to default Alignment.center) ===
+                            // Timeout Warning Banner
+                            if (quizProvider.isTimeUp) ...[
+                              Container(
+                                margin: const EdgeInsets.only(bottom: 12),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 14, vertical: 10),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.negativeRed.withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(color: AppTheme.negativeRed),
+                                ),
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.timer_off_outlined,
+                                        color: AppTheme.negativeRed, size: 20),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        'Waktu habis! Silakan lanjut ke soal berikutnya.',
+                                        style: TextStyle(
+                                          color: isDark
+                                              ? AppTheme.textBase
+                                              : AppTheme.textDark,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: 'Poppins',
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+
+                            // === QUESTION IMAGE ===
                             if (q.imagePath != null)
                               _QuestionImage(
                                 imagePath: q.imagePath!,
@@ -299,6 +348,57 @@ class _QuizScreenState extends State<QuizScreen>
 
 // ─── Sub-widgets ──────────────────────────────────────────────────────────────
 
+class _TimerChip extends StatelessWidget {
+  final int seconds;
+  final bool isDark;
+  const _TimerChip({required this.seconds, required this.isDark});
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isWarning = seconds <= 5;
+    final Color color =
+        isWarning ? AppTheme.negativeRed : AppTheme.spotifyGreen;
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: isWarning
+            ? AppTheme.negativeRed.withValues(alpha: 0.15)
+            : (isDark ? AppTheme.darkSurface : AppTheme.lightSurface),
+        borderRadius: BorderRadius.circular(500),
+        border: Border.all(
+          color: isWarning
+              ? AppTheme.negativeRed
+              : (isDark ? AppTheme.borderGray : AppTheme.lightBorder),
+          width: isWarning ? 1.5 : 1,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.timer_outlined,
+            color: color,
+            size: 15,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            '${seconds}s',
+            style: TextStyle(
+              color: color,
+              fontWeight: FontWeight.w700,
+              fontSize: 12,
+              fontFamily: 'Poppins',
+              letterSpacing: 0.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _ScoreChip extends StatelessWidget {
   final int score;
   final bool isDark;
@@ -307,7 +407,7 @@ class _ScoreChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
         color: isDark ? AppTheme.darkSurface : AppTheme.lightSurface,
         borderRadius: BorderRadius.circular(500), // Pill Shape
@@ -318,8 +418,8 @@ class _ScoreChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.star_rounded, color: AppTheme.spotifyGreen, size: 16),
-          const SizedBox(width: 5),
+          const Icon(Icons.star_rounded, color: AppTheme.spotifyGreen, size: 15),
+          const SizedBox(width: 4),
           Text(
             '$score PTS',
             style: TextStyle(
@@ -327,7 +427,7 @@ class _ScoreChip extends StatelessWidget {
               fontWeight: FontWeight.w700,
               fontSize: 12,
               fontFamily: 'Poppins',
-              letterSpacing: 1.0,
+              letterSpacing: 0.5,
             ),
           ),
         ],
@@ -348,7 +448,7 @@ class _QuestionImage extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: isDark ? AppTheme.darkSurface : AppTheme.lightSurface,
-        borderRadius: BorderRadius.circular(8), // Spotify Standard Card Radius (8px)
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: isDark ? AppTheme.borderGray : AppTheme.lightBorder,
         ),
@@ -365,7 +465,6 @@ class _QuestionImage extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            // Default center alignment (crop reverted as requested)
             Image.asset(
               imagePath,
               fit: BoxFit.cover,
@@ -381,7 +480,6 @@ class _QuestionImage extends StatelessWidget {
                 );
               },
             ),
-            // Gradient Overlay
             Positioned(
               bottom: 0,
               left: 0,
@@ -400,7 +498,6 @@ class _QuestionImage extends StatelessWidget {
                 ),
               ),
             ),
-            // Tag Badge
             Positioned(
               top: 8,
               left: 8,
@@ -453,7 +550,7 @@ class _QuestionCard extends StatelessWidget {
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: isDark ? AppTheme.darkSurface : AppTheme.lightSurface,
-        borderRadius: BorderRadius.circular(8), // Spotify 8px Card Radius
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: isDark ? AppTheme.borderGray : AppTheme.lightBorder,
         ),
@@ -468,7 +565,6 @@ class _QuestionCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Question Badge
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
             decoration: BoxDecoration(
@@ -524,7 +620,7 @@ class _NextButton extends StatelessWidget {
         height: 50,
         decoration: BoxDecoration(
           color: AppTheme.spotifyGreen,
-          borderRadius: BorderRadius.circular(500), // Spotify Full Pill Shape
+          borderRadius: BorderRadius.circular(500),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.3),
@@ -542,7 +638,7 @@ class _NextButton extends StatelessWidget {
                 color: Colors.black,
                 fontWeight: FontWeight.w700,
                 fontSize: 14,
-                letterSpacing: 1.5, // Wide Letter Spacing
+                letterSpacing: 1.5,
                 fontFamily: 'Poppins',
               ),
             ),
