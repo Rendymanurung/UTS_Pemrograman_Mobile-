@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../models/question_model.dart';
 
@@ -9,6 +10,12 @@ class QuizProvider extends ChangeNotifier {
   int? _selectedAnswerIndex;
   bool _hasAnswered = false;
 
+  // === Countdown Timer State ===
+  static const int maxSecondsPerQuestion = 15;
+  int _remainingSeconds = maxSecondsPerQuestion;
+  Timer? _timer;
+  bool _isTimeUp = false;
+
   List<Question> get questions => _questions;
   int get currentIndex => _currentIndex;
   int get score => _score;
@@ -16,11 +23,38 @@ class QuizProvider extends ChangeNotifier {
   int? get selectedAnswerIndex => _selectedAnswerIndex;
   bool get hasAnswered => _hasAnswered;
 
+  int get remainingSeconds => _remainingSeconds;
+  bool get isTimeUp => _isTimeUp;
+  int get maxSeconds => maxSecondsPerQuestion;
+
   Question get currentQuestion => _questions[_currentIndex];
 
-  void answerQuestion(int selectedIndex) {
-    if (_hasAnswered) return;
+  void startTimer() {
+    _timer?.cancel();
+    _remainingSeconds = maxSecondsPerQuestion;
+    _isTimeUp = false;
 
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_remainingSeconds > 0) {
+        _remainingSeconds--;
+        notifyListeners();
+      } else {
+        _timer?.cancel();
+        _isTimeUp = true;
+        _hasAnswered = true; // Auto-mark as answered when time expires
+        notifyListeners();
+      }
+    });
+  }
+
+  void stopTimer() {
+    _timer?.cancel();
+  }
+
+  void answerQuestion(int selectedIndex) {
+    if (_hasAnswered || _isTimeUp) return;
+
+    stopTimer();
     _selectedAnswerIndex = selectedIndex;
     _hasAnswered = true;
 
@@ -32,10 +66,13 @@ class QuizProvider extends ChangeNotifier {
   }
 
   void nextQuestion() {
+    stopTimer();
     if (_currentIndex < _questions.length - 1) {
       _currentIndex++;
       _selectedAnswerIndex = null;
       _hasAnswered = false;
+      _isTimeUp = false;
+      startTimer();
     } else {
       _isQuizFinished = true;
     }
@@ -43,11 +80,20 @@ class QuizProvider extends ChangeNotifier {
   }
 
   void resetQuiz() {
+    stopTimer();
     _currentIndex = 0;
     _score = 0;
     _isQuizFinished = false;
     _selectedAnswerIndex = null;
     _hasAnswered = false;
+    _isTimeUp = false;
+    startTimer();
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 }
