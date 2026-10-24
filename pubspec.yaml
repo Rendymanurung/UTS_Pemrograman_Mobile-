@@ -21,11 +21,10 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-
   assets:
     - assets/
     - assets/images/
-
+    - assets/screenshot/
 
   fonts:
     - family: Poppins

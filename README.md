@@ -1,4 +1,4 @@
-# Anime Knowledge Quiz – Aplikasi Kuis Pilihan Ganda
+# QuizMate – Aplikasi Kuis Pilihan Ganda
 
 ---
 
@@ -6,36 +6,36 @@
 
 | | |
 |---|---|
-| **Nama** | [NAMA KAMU] |
-| **NIM** | [NIM KAMU] |
-| **Lab** | [NAMA LAB / KELAS KAMU] |
+| **Nama** | Rendy Januarta |
+| **NIM** | 241401090 |
+| **Lab** | LAB 6 Pemrograman Mobile |
 
 ---
 
 ## 📱 Informasi Aplikasi
 
 ### Nama Aplikasi
-**Anime Knowledge Quiz** – Kuis Pilihan Ganda
+**QuizMate** – Kuis Pilihan Ganda
 
 ### Deskripsi Singkat
-**Anime Knowledge Quiz** adalah aplikasi kuis pilihan ganda interaktif berbasis Flutter yang dirancang untuk menguji wawasan pengguna mengenai anime. Aplikasi ini dilengkapi dengan indikator *countdown timer* per soal (15 detik), petunjuk gambar (*visual clue*), feedback jawaban reaktif, serta statistik hasil kuis dan tingkat akurasi. Aplikasi mendukung desain adaptif/responsif untuk berbagai ukuran layar (mobile, tablet, dan web/desktop), mengusung bahasa desain *Spotify Design System*, dan mendukung *Dark Mode* & *Light Mode*.
+QuizMate (Anime Knowledge Quiz) adalah aplikasi kuis pilihan ganda berbasis Flutter yang dirancang untuk menguji wawasan pengguna mengenai anime. Aplikasi ini dilengkapi dengan indikator *countdown timer* per soal (15 detik), petunjuk gambar (*visual clue*), feedback jawaban reaktif, serta statistik hasil kuis dan tingkat akurasi. Aplikasi mendukung tampilan responsif di berbagai ukuran layar (mobile, tablet, dan web/desktop), mengusung bahasa desain *Spotify Design System*, dan mendukung *Dark Mode* & *Light Mode*.
 
 ### Fitur-Fitur yang Tersedia
 
 #### Fitur Wajib
-- **Input Identitas Peserta** — Pengguna mengisi nama peserta sebelum memulai kuis.
-- **Kuis Pilihan Ganda** — Tersedia 5 soal pilihan ganda (A–D) bertema pengetahuan anime.
-- **Countdown Timer per Soal** — Setiap soal diberi batas waktu 15 detik; jika waktu habis, soal dihitung otomatis tidak terjawab dan memperingatkan peserta.
-- **Petunjuk Gambar (*Visual Clue*)** — Setiap soal dilengkapi petunjuk gambar pendukung.
-- **Feedback Jawaban Reaktif** — Jawaban benar/salah langsung ditampilkan secara visual setelah opsi dipilih.
-- **Hasil Akhir & Akurasi** — Menampilkan skor akhir, jumlah jawaban benar, salah, persentase akurasi, dan pesan apresiasi peserta.
+- **Input Identitas Peserta** — Pengguna mengisi nama lengkap sebelum memulai kuis
+- **Kuis Pilihan Ganda** — Setiap sesi kuis memiliki 5 soal pilihan ganda (A–D) bertema anime
+- **Timer per Soal** — Setiap soal diberi waktu 15 detik; jika habis, otomatis ditandai dan memperingatkan peserta
+- **Petunjuk Gambar (*Visual Clue*)** — Setiap soal dilengkapi petunjuk visual gambar
+- **Feedback Jawaban** — Jawaban benar/salah ditampilkan secara visual setelah memilih opsi
+- **Hasil Akhir** — Menampilkan skor, persentase akurasi, jumlah benar/salah, dan informasi peserta
 
 #### Fitur Tambahan
-- **Branding Logo Gotik "L"** — Elemen visual khas ikon Gotik "L" (Death Note) dengan *badge frame* kustom di halaman utama dan hasil kuis.
-- **Dark Mode & Light Mode** — Toggle beralih tema terang/gelap yang dapat diakses di bagian *header* semua halaman.
-- **Spotify Design System** — Penggunaan palet warna *Spotify Green* (`#1ED760`), latar *Near Black* (`#121212`), geometri *Full Pill*, dan tombol bergaya *system label uppercase*.
-- **Responsif Multi-Platform** — Layout adaptif menggunakan `ResponsiveUtil` untuk tampilan smartphone, tablet, dan web/desktop.
-- **Animasi Transisi & Feedback** — Animasi *fade* dan *slide* halus saat perpindahan soal dan perpindahan halaman.
+- **Branding Logo Gotik "L"** — Elemen visual khas ikon Gotik "L" (Death Note) dengan *badge frame* kustom di halaman awal dan hasil kuis
+- **Dark Mode & Light Mode** — Toggle beralih tema terang/gelap tersedia di semua halaman via tombol di header
+- **Spotify Design System** — Penggunaan palet warna *Spotify Green* (`#1ED760`), latar *Near Black* (`#121212`), geometri *Full Pill*, dan tombol bergaya *system label uppercase*
+- **Responsif Multi-Platform** — Layout adaptif untuk smartphone, tablet, dan web/desktop menggunakan `ResponsiveUtil`
+- **Animasi Transisi** — Setiap perpindahan halaman dan perubahan state menggunakan animasi halus
 
 ---
 
@@ -70,15 +70,15 @@ lib/
 ## 🚀 Cara Menjalankan Aplikasi
 
 ### Prasyarat
-- Flutter SDK `^3.0.0` (atau versi terbaru)
+- Flutter SDK `^3.0.0`
 - Dart SDK yang sesuai
 - Emulator Android / iOS, browser Chrome, atau Windows desktop
 
-### Langkah-Langkah
+### Langkah
 
 ```bash
 # 1. Clone repository
-git clone [LINK_REPOSITORY_GITHUB_KAMU]
+git clone https://github.com/rendyjanuarta/uts_rendy.git
 cd uts_rendy
 
 # 2. Install dependencies
@@ -99,16 +99,13 @@ flutter run -d windows
 ## 🖼️ Screenshot Aplikasi
 
 ### Halaman Awal (Start Screen)
-<img src="[LINK_SCREENSHOT_START_SCREEN]" width="300" alt="Start Screen"/>
+<img src="assets/screenshot/LINK_SCREENSHOT_START_SCREEN.png" width="300" alt="Start Screen"/>
 
 ### Halaman Kuis (Quiz Screen)
-<img src="[LINK_SCREENSHOT_QUIZ_SCREEN]" width="300" alt="Quiz Screen"/>
+<img src="assets/screenshot/LINK_SCREENSHOT_QUIZ_SCREEN.png" width="300" alt="Quiz Screen"/>
 
 ### Halaman Hasil Kuis (Result Screen)
-<img src="[LINK_SCREENSHOT_RESULT_SCREEN]" width="300" alt="Result Screen"/>
-
-### Mode Gelap (Dark Mode)
-<img src="[LINK_SCREENSHOT_DARK_MODE]" width="300" alt="Dark Mode"/>
+<img src="assets/screenshot/LINK_SCREENSHOT_RESULT_SCREEN.png" width="300" alt="Result Screen"/>
 
 ---
 
@@ -119,14 +116,14 @@ flutter run -d windows
 |---|---|
 | Ikon & Logo Gotik "L" (`l_logo.png`) | Logo Gotik "L" (Death Note) |
 | Font **Poppins** | [Google Fonts](https://fonts.google.com/specimen/Poppins) – SIL Open Font License |
-| Material Symbols / Icons | [Material Symbols](https://fonts.google.com/icons) – Apache License 2.0 |
+| Ikon Material | [Material Symbols](https://fonts.google.com/icons) – Apache License 2.0 |
 | Framework & Library | [Flutter](https://flutter.dev) & [Provider](https://pub.dev/packages/provider) |
 
-### Link Prototype / Demo
-> [[LINK CANVA PROTOTYPE APLIKASI (OPSIONAL)]](https://canva.com)
+### Link Mockup / Prototype
+> [LINK CANVA PROTOTYPE APLIKASI](https://canva.link/1bx8rs9qvn61rwe)
 
 ### Link Video Presentasi
-> [[LINK GDRIVE VIDEO PRESENTASI]](https://drive.google.com)
+> [LINK GDRIVE VIDEO PRESENTASI](https://drive.google.com/drive/folders/1-T_X72YFjfD37N_KyU8T_zlE2zNFzAuN?usp=sharing)
 
 ---
 
@@ -154,11 +151,11 @@ Halaman Awal (Start Screen)
 | Teknologi | Keterangan |
 |---|---|
 | **Flutter** | Framework UI cross-platform |
-| **Dart** | Bahasa pemrograman utama |
+| **Dart** | Bahasa pemrograman |
 | **Provider** | State management untuk kuis, pengguna, dan tema |
 | **Spotify Design System** | Bahasa desain UI (Spotify Green `#1ED760` & Near Black `#121212`) |
 | **MediaQuery / ResponsiveUtil** | Deteksi ukuran layar untuk responsivitas adaptif |
 
 ---
 
-*UTS Pemrograman Mobile – Fasilkom-TI USU*
+*UTS Pemrograman Mobile – LAB 6 Pemrograman Mobile – Fasilkom-TI USU – 2026*
